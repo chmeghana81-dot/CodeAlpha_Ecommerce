@@ -1,0 +1,20 @@
+﻿.my-orders-page {
+  min-height: 65vh;
+  max-width: 1200px;
+  margin: 45px auto;
+  padding: 25px;
+}
+
+.my-orders-page h1 {
+  color: #0b2259;
+  font-size: 32px;
+  margin-bottom: 25px;
+}
+
+.order-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
