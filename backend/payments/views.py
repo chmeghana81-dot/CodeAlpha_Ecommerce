@@ -120,6 +120,8 @@ class CreateRazorpayOrderAPIView(APIView):
                 "product_name": product.name,
                 "quantity": item.quantity,
                 "price": str(price),
+                "selected_size": item.selected_size,
+                "selected_color": item.selected_color,
             })
 
         amount_paise = int(total_amount * 100)
@@ -340,8 +342,20 @@ class VerifyRazorpayPaymentAPIView(APIView):
                     )
 
                 # Create Django order only after verified payment
+                shipping = payment.shipping_details or {}
+
                 order = Order.objects.create(
                     user=request.user,
+                    full_name=shipping.get("full_name", ""),
+                    mobile=shipping.get("mobile", ""),
+                    address=shipping.get("address", ""),
+                    city=shipping.get("city", ""),
+                    state=shipping.get("state", ""),
+                    pincode=shipping.get("pincode", ""),
+                    payment_method="razorpay",
+                    payment_status="paid",
+                    razorpay_order_id=payment.razorpay_order_id,
+                    razorpay_payment_id=razorpay_payment_id,
                     total_amount=total_amount,
                     status="confirmed",
                 )
@@ -357,6 +371,8 @@ class VerifyRazorpayPaymentAPIView(APIView):
                         product=product,
                         quantity=quantity,
                         price=price,
+                        selected_size=item.get("selected_size", ""),
+                        selected_color=item.get("selected_color", ""),
                     )
 
                     product.stock -= quantity

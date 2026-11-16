@@ -1,475 +1,20 @@
-﻿
-// import React, { useMemo, useState } from "react";
-// import "./AdminDashboard.css";
-
-// const initialProducts = [
-//   { id: 1, name: "Premium Headphones", category: "Electronics", price: 2499, stock: 25, status: "Active" },
-//   { id: 2, name: "Smart Watch", category: "Electronics", price: 3999, stock: 18, status: "Active" },
-//   { id: 3, name: "Running Shoes", category: "Fashion", price: 1899, stock: 12, status: "Active" },
-//   { id: 4, name: "Travel Backpack", category: "Accessories", price: 1299, stock: 0, status: "Out of Stock" },
-// ];
-
-// const initialOrders = [
-//   { id: "ORD001", customer: "Rahul Kumar", date: "11 Nov 2026", amount: 2499, status: "Delivered" },
-//   { id: "ORD002", customer: "Priya Sharma", date: "11 Nov 2026", amount: 3999, status: "Processing" },
-//   { id: "ORD003", customer: "Arjun Reddy", date: "10 Nov 2026", amount: 1899, status: "Pending" },
-//   { id: "ORD004", customer: "Sneha Rao", date: "10 Nov 2026", amount: 1299, status: "Cancelled" },
-// ];
-
-// const initialCustomers = [
-//   { id: 1, name: "Rahul Kumar", email: "rahul@gmail.com", orders: 5 },
-//   { id: 2, name: "Priya Sharma", email: "priya@gmail.com", orders: 8 },
-//   { id: 3, name: "Arjun Reddy", email: "arjun@gmail.com", orders: 3 },
-//   { id: 4, name: "Sneha Rao", email: "sneha@gmail.com", orders: 2 },
-// ];
-
-// function AdminDashboard() {
-//   const [activePage, setActivePage] = useState("Dashboard");
-//   const [products, setProducts] = useState(initialProducts);
-//   const [orders, setOrders] = useState(initialOrders);
-//   const [customers] = useState(initialCustomers);
-//   const [search, setSearch] = useState("");
-//   const [showForm, setShowForm] = useState(false);
-//   const [editingProduct, setEditingProduct] = useState(null);
-
-//   const [formData, setFormData] = useState({
-//     name: "",
-//     category: "",
-//     price: "",
-//     stock: "",
-//     status: "Active",
-//   });
-
-//   const totalRevenue = orders
-//     .filter((order) => order.status === "Delivered")
-//     .reduce((total, order) => total + order.amount, 0);
-
-//   const filteredProducts = useMemo(
-//     () =>
-//       products.filter((product) =>
-//         product.name.toLowerCase().includes(search.toLowerCase())
-//       ),
-//     [products, search]
-//   );
-
-//   const filteredOrders = useMemo(
-//     () =>
-//       orders.filter(
-//         (order) =>
-//           order.id.toLowerCase().includes(search.toLowerCase()) ||
-//           order.customer.toLowerCase().includes(search.toLowerCase())
-//       ),
-//     [orders, search]
-//   );
-
-//   const openAddForm = () => {
-//     setEditingProduct(null);
-//     setFormData({
-//       name: "",
-//       category: "",
-//       price: "",
-//       stock: "",
-//       status: "Active",
-//     });
-//     setShowForm(true);
-//   };
-
-//   const openEditForm = (product) => {
-//     setEditingProduct(product);
-//     setFormData({
-//       name: product.name,
-//       category: product.category,
-//       price: String(product.price),
-//       stock: String(product.stock),
-//       status: product.status,
-//     });
-//     setShowForm(true);
-//   };
-
-//   const saveProduct = (e) => {
-//     e.preventDefault();
-
-//     const productData = {
-//       ...formData,
-//       price: Number(formData.price),
-//       stock: Number(formData.stock),
-//       status: Number(formData.stock) === 0 ? "Out of Stock" : formData.status,
-//     };
-
-//     if (editingProduct) {
-//       setProducts((previous) =>
-//         previous.map((product) =>
-//           product.id === editingProduct.id
-//             ? { ...product, ...productData }
-//             : product
-//         )
-//       );
-//     } else {
-//       setProducts((previous) => [
-//         ...previous,
-//         { id: Date.now(), ...productData },
-//       ]);
-//     }
-
-//     setShowForm(false);
-//   };
-
-//   const deleteProduct = (id) => {
-//     if (window.confirm("Are you sure you want to delete this product?")) {
-//       setProducts((previous) =>
-//         previous.filter((product) => product.id !== id)
-//       );
-//     }
-//   };
-
-//   const updateOrderStatus = (id, status) => {
-//     setOrders((previous) =>
-//       previous.map((order) =>
-//         order.id === id ? { ...order, status } : order
-//       )
-//     );
-//   };
-
-//   const menuItems = [
-//     { name: "Dashboard", icon: "▦" },
-//     { name: "Products", icon: "□" },
-//     { name: "Orders", icon: "▤" },
-//     { name: "Customers", icon: "♙" },
-//   ];
-
-//   const pageTitle = {
-//     Dashboard: "Dashboard Overview",
-//     Products: "Product Management",
-//     Orders: "Order Management",
-//     Customers: "Customer Management",
-//   };
-
-//   const renderDashboard = () => (
-//     <>
-//       <div className="admin-stats">
-//         <div className="stat-card">
-//           <span className="stat-icon">₹</span>
-//           <p>Total Revenue</p>
-//           <h2>₹{totalRevenue.toLocaleString("en-IN")}</h2>
-//           <small>From delivered sample orders</small>
-//         </div>
-
-//         <div className="stat-card">
-//           <span className="stat-icon">▤</span>
-//           <p>Total Orders</p>
-//           <h2>{orders.length}</h2>
-//           <small>All recorded orders</small>
-//         </div>
-
-//         <div className="stat-card">
-//           <span className="stat-icon">□</span>
-//           <p>Total Products</p>
-//           <h2>{products.length}</h2>
-//           <small>Products in catalogue</small>
-//         </div>
-
-//         <div className="stat-card">
-//           <span className="stat-icon">♙</span>
-//           <p>Total Customers</p>
-//           <h2>{customers.length}</h2>
-//           <small>Registered sample customers</small>
-//         </div>
-//       </div>
-
-//       <div className="admin-panel">
-//         <div className="panel-heading">
-//           <h3>Recent Orders</h3>
-//           <button onClick={() => setActivePage("Orders")}>
-//             View All
-//           </button>
-//         </div>
-
-//         {renderOrderTable(orders.slice(0, 4))}
-//       </div>
-
-//       <div className="admin-panel">
-//         <div className="panel-heading">
-//           <h3>Low Stock Products</h3>
-//           <button onClick={() => setActivePage("Products")}>
-//             Manage Products
-//           </button>
-//         </div>
-
-//         {renderProductTable(
-//           products.filter((product) => product.stock <= 12)
-//         )}
-//       </div>
-//     </>
-//   );
-
-//   const renderProductTable = (items) => (
-//     <div className="table-wrapper">
-//       <table className="admin-table">
-//         <thead>
-//           <tr>
-//             <th>Product</th>
-//             <th>Category</th>
-//             <th>Price</th>
-//             <th>Stock</th>
-//             <th>Status</th>
-//             <th>Actions</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {items.length ? items.map((product) => (
-//             <tr key={product.id}>
-//               <td>{product.name}</td>
-//               <td>{product.category}</td>
-//               <td>₹{product.price.toLocaleString("en-IN")}</td>
-//               <td>{product.stock}</td>
-//               <td>
-//                 <span className={`status ${product.stock === 0 ? "cancelled" : "delivered"}`}>
-//                   {product.stock === 0 ? "Out of Stock" : product.status}
-//                 </span>
-//               </td>
-//               <td>
-//                 <div className="action-buttons">
-//                   <button className="edit-btn" onClick={() => openEditForm(product)}>
-//                     Edit
-//                   </button>
-//                   <button className="delete-btn" onClick={() => deleteProduct(product.id)}>
-//                     Delete
-//                   </button>
-//                 </div>
-//               </td>
-//             </tr>
-//           )) : (
-//             <tr><td colSpan="6">No products found.</td></tr>
-//           )}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-
-//   const renderOrderTable = (items) => (
-//     <div className="table-wrapper">
-//       <table className="admin-table">
-//         <thead>
-//           <tr>
-//             <th>Order ID</th>
-//             <th>Customer</th>
-//             <th>Date</th>
-//             <th>Amount</th>
-//             <th>Status</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {items.length ? items.map((order) => (
-//             <tr key={order.id}>
-//               <td>{order.id}</td>
-//               <td>{order.customer}</td>
-//               <td>{order.date}</td>
-//               <td>₹{order.amount.toLocaleString("en-IN")}</td>
-//               <td>
-//                 <select
-//                   className="status-select"
-//                   value={order.status}
-//                   onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-//                 >
-//                   {["Pending", "Processing", "Delivered", "Cancelled"].map((status) => (
-//                     <option key={status}>{status}</option>
-//                   ))}
-//                 </select>
-//               </td>
-//             </tr>
-//           )) : (
-//             <tr><td colSpan="5">No orders found.</td></tr>
-//           )}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-
-//   return (
-//     <div className="admin-layout">
-//       <aside className="admin-sidebar">
-//         <h2 className="admin-logo">Mega<span>Store</span></h2>
-//         <p className="admin-label">ADMIN PANEL</p>
-
-//         <nav>
-//           {menuItems.map((item) => (
-//             <button
-//               key={item.name}
-//               className={`admin-nav-item ${activePage === item.name ? "active" : ""}`}
-//               onClick={() => {
-//                 setActivePage(item.name);
-//                 setSearch("");
-//               }}
-//             >
-//               <span>{item.icon}</span>
-//               {item.name}
-//             </button>
-//           ))}
-//         </nav>
-
-//         <div className="sidebar-bottom">
-//           <p>MEGASTORE ADMIN</p>
-//           <small>Management Console</small>
-//         </div>
-//       </aside>
-
-//       <main className="admin-main">
-//         <header className="admin-topbar">
-//           <div>
-//             <h1>{pageTitle[activePage]}</h1>
-//             <p>Welcome to MegaStore administration.</p>
-//           </div>
-//           <div className="admin-profile">
-//             <span>Admin</span>
-//             <div className="admin-avatar">A</div>
-//           </div>
-//         </header>
-
-//         {activePage !== "Dashboard" && (
-//           <div className="admin-toolbar">
-//             <input
-//               type="search"
-//               placeholder={`Search ${activePage.toLowerCase()}...`}
-//               value={search}
-//               onChange={(e) => setSearch(e.target.value)}
-//             />
-
-//             {activePage === "Products" && (
-//               <button className="gold-btn" onClick={openAddForm}>
-//                 + Add Product
-//               </button>
-//             )}
-//           </div>
-//         )}
-
-//         {activePage === "Dashboard" && renderDashboard()}
-
-//         {activePage === "Products" && (
-//           <div className="admin-panel">
-//             {renderProductTable(filteredProducts)}
-//           </div>
-//         )}
-
-//         {activePage === "Orders" && (
-//           <div className="admin-panel">
-//             {renderOrderTable(filteredOrders)}
-//           </div>
-//         )}
-
-//         {activePage === "Customers" && (
-//           <div className="admin-panel">
-//             <div className="table-wrapper">
-//               <table className="admin-table">
-//                 <thead>
-//                   <tr>
-//                     <th>Customer</th>
-//                     <th>Email</th>
-//                     <th>Total Orders</th>
-//                   </tr>
-//                 </thead>
-//                 <tbody>
-//                   {customers
-//                     .filter((customer) =>
-//                       `${customer.name} ${customer.email}`
-//                         .toLowerCase()
-//                         .includes(search.toLowerCase())
-//                     )
-//                     .map((customer) => (
-//                       <tr key={customer.id}>
-//                         <td>{customer.name}</td>
-//                         <td>{customer.email}</td>
-//                         <td>{customer.orders}</td>
-//                       </tr>
-//                     ))}
-//                 </tbody>
-//               </table>
-//             </div>
-//           </div>
-//         )}
-
-//         {showForm && (
-//           <div className="modal-overlay">
-//             <form className="product-modal" onSubmit={saveProduct}>
-//               <h2>{editingProduct ? "Edit Product" : "Add New Product"}</h2>
-
-//               <label>Product Name</label>
-//               <input
-//                 required
-//                 value={formData.name}
-//                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-//                 placeholder="Enter product name"
-//               />
-
-//               <label>Category</label>
-//               <input
-//                 required
-//                 value={formData.category}
-//                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-//                 placeholder="Enter category"
-//               />
-
-//               <label>Price (₹)</label>
-//               <input
-//                 required
-//                 min="0"
-//                 type="number"
-//                 value={formData.price}
-//                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-//                 placeholder="Enter price"
-//               />
-
-//               <label>Stock</label>
-//               <input
-//                 required
-//                 min="0"
-//                 type="number"
-//                 value={formData.stock}
-//                 onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-//                 placeholder="Enter stock quantity"
-//               />
-
-//               <div className="modal-actions">
-//                 <button type="button" className="cancel-btn" onClick={() => setShowForm(false)}>
-//                   Cancel
-//                 </button>
-//                 <button type="submit" className="gold-btn">
-//                   Save Product
-//                 </button>
-//               </div>
-//             </form>
-//           </div>
-//         )}
-//       </main>
-//     </div>
-//   );
-// }
-
-// export default AdminDashboard;
-
-
-import React, { useEffect, useState } from "react";
+﻿import React, { useCallback, useEffect, useState } from "react";
 import "./AdminDashboard.css";
 
 const API_BASE = "http://127.0.0.1:8000/api";
 
-const getList = (data) => {
-  if (Array.isArray(data)) return data;
-  if (Array.isArray(data?.results)) return data.results;
-  return [];
+const initialProduct = {
+  name: "",
+  description: "",
+  category: "",
+  price: "",
+  stock: "",
 };
 
-const money = (value) =>
-  Number(value || 0).toLocaleString("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+const AdminDashboard = () => {
+  const token = localStorage.getItem("access_token");
 
-const formatDate = (value) =>
-  value ? new Date(value).toLocaleString("en-IN") : "-";
-
-function AdminDashboard() {
-  const [activePage, setActivePage] = useState("Dashboard");
-
+  const [activeSection, setActiveSection] = useState("dashboard");
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [carts, setCarts] = useState([]);
@@ -477,588 +22,676 @@ function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [payments, setPayments] = useState([]);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+
+  const [showProductForm, setShowProductForm] = useState(false);
+  const [savingProduct, setSavingProduct] = useState(false);
+  const [newProduct, setNewProduct] = useState(initialProduct);
+
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+
+  const [productError, setProductError] = useState("");
+  const [productSuccess, setProductSuccess] = useState("");
   const [sectionErrors, setSectionErrors] = useState({});
-  const [updatingOrder, setUpdatingOrder] = useState(null);
 
-  const token = localStorage.getItem("access_token");
-
+  // API REQUEST
   const request = async (url, options = {}) => {
+    const isFormData = options.body instanceof FormData;
+
+    const headers = {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    };
+
+    if (!isFormData) {
+      headers["Content-Type"] = "application/json";
+    }
+
     const response = await fetch(`${API_BASE}${url}`, {
       ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        ...options.headers,
-      },
+      headers,
     });
 
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      throw new Error(
-        data.detail || data.error || `Request failed (${response.status})`
-      );
+      const message =
+        data.detail ||
+        data.error ||
+        Object.entries(data)
+          .map(([key, value]) => {
+            const errorText =
+              typeof value === "object"
+                ? JSON.stringify(value)
+                : String(value);
+            return `${key}: ${errorText}`;
+          })
+          .join("\n") ||
+        `Request failed: ${response.status}`;
+
+      throw new Error(message);
     }
 
     return data;
   };
 
-  const loadDashboardData = async () => {
+  // HANDLE API LIST RESPONSES
+  const getList = (data) => {
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data.results)) return data.results;
+    if (Array.isArray(data.data)) return data.data;
+    return [];
+  };
+
+  // LOAD DASHBOARD DATA
+  const loadDashboardData = useCallback(async () => {
     setLoading(true);
-    setSectionErrors({});
+    const errors = {};
 
     const endpoints = [
-      ["products", "/products/"],
-      ["categories", "/categories/"],
-      ["carts", "/cart/admin/"],
-      ["users", "/auth/admin/users/"],
-      ["orders", "/orders/admin/"],
-      ["payments", "/payments/admin/"],
+      { key: "products", url: "/products/", setter: setProducts },
+      { key: "categories", url: "/categories/", setter: setCategories },
+      { key: "carts", url: "/cart/admin/", setter: setCarts },
+      { key: "users", url: "/auth/admin/users/", setter: setUsers },
+      { key: "orders", url: "/orders/admin/", setter: setOrders },
+      { key: "payments", url: "/payments/admin/", setter: setPayments },
     ];
 
-    const results = await Promise.all(
-      endpoints.map(async ([key, url]) => {
+    await Promise.all(
+      endpoints.map(async ({ key, url, setter }) => {
         try {
           const data = await request(url);
-          return { key, data, error: "" };
-        } catch (err) {
-          return { key, data: [], error: err.message };
+          setter(getList(data));
+        } catch (error) {
+          errors[key] = error.message;
+          console.error(`${key} API error:`, error.message);
         }
       })
     );
 
-    const errors = {};
-
-    results.forEach(({ key, data, error }) => {
-      if (error) errors[key] = error;
-
-      const list = getList(data);
-
-      switch (key) {
-        case "products":
-          setProducts(list);
-          break;
-        case "categories":
-          setCategories(list);
-          break;
-        case "carts":
-          setCarts(list);
-          break;
-        case "users":
-          setUsers(list);
-          break;
-        case "orders":
-          setOrders(list);
-          break;
-        case "payments":
-          setPayments(list);
-          break;
-        default:
-          break;
-      }
-    });
-
     setSectionErrors(errors);
     setLoading(false);
-  };
+  }, [token]);
 
   useEffect(() => {
     loadDashboardData();
-  }, []);
+  }, [loadDashboardData]);
 
-  const updateOrderStatus = async (orderId, newStatus) => {
+  // PRODUCT INPUT CHANGE
+  const handleProductChange = (e) => {
+    const { name, value } = e.target;
+
+    setNewProduct((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
+  };
+
+  // SELECT PRODUCT IMAGE
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setProductError("Please select a valid image.");
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setProductError("Image size must be less than 5 MB.");
+      e.target.value = "";
+      return;
+    }
+
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setProductError("");
+  };
+
+  // REMOVE IMAGE
+  const handleRemoveImage = () => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
+    setImageFile(null);
+    setImagePreview("");
+  };
+
+  // ADD PRODUCT
+  const handleAddProduct = async (e) => {
+    e.preventDefault();
+
+    setProductError("");
+    setProductSuccess("");
+
+    if (
+      !newProduct.name.trim() ||
+      !newProduct.category ||
+      newProduct.price === "" ||
+      newProduct.stock === ""
+    ) {
+      setProductError("Please fill all required fields.");
+      return;
+    }
+
+    const price = Number(newProduct.price);
+    const stock = Number(newProduct.stock);
+
+    if (!Number.isFinite(price) || price <= 0) {
+      setProductError("Enter a valid product price.");
+      return;
+    }
+
+    if (!Number.isInteger(stock) || stock < 0) {
+      setProductError("Enter a valid stock quantity.");
+      return;
+    }
+
+    if (!imageFile) {
+      setProductError("Please select a product image.");
+      return;
+    }
+
     try {
-      setUpdatingOrder(orderId);
+      setSavingProduct(true);
 
-      const updatedOrder = await request(
-        `/orders/admin/${orderId}/status/`,
-        {
-          method: "PATCH",
-          body: JSON.stringify({ status: newStatus }),
-        }
-      );
+      const formData = new FormData();
 
-      setOrders((previous) =>
-        previous.map((order) =>
-          order.id === orderId ? updatedOrder : order
-        )
-      );
+      formData.append("name", newProduct.name.trim());
+      formData.append("description", newProduct.description.trim());
+      formData.append("category", newProduct.category);
+      formData.append("price", String(price));
+      formData.append("stock", String(stock));
+      formData.append("image", imageFile);
 
-      alert("Order status updated successfully.");
-    } catch (err) {
-      alert(`Unable to update order: ${err.message}`);
-      loadDashboardData();
+      await request("/products/", {
+        method: "POST",
+        body: formData,
+      });
+
+      setProductSuccess("Product added successfully!");
+
+      setNewProduct(initialProduct);
+      handleRemoveImage();
+      setShowProductForm(false);
+
+      await loadDashboardData();
+
+      alert("Product added successfully!");
+    } catch (error) {
+      console.error("Add product error:", error);
+      setProductError(error.message);
     } finally {
-      setUpdatingOrder(null);
+      setSavingProduct(false);
     }
   };
 
-  const totalProducts = products.length;
-  const totalStock = products.reduce(
-    (total, product) => total + Number(product.stock || 0),
-    0
-  );
+  // CLOSE PRODUCT FORM
+  const closeProductForm = () => {
+    setShowProductForm(false);
+    setNewProduct(initialProduct);
+    setProductError("");
+    setProductSuccess("");
+    handleRemoveImage();
+  };
 
-  const totalInventoryValue = products.reduce(
-    (total, product) =>
-      total + Number(product.price || 0) * Number(product.stock || 0),
-    0
-  );
+  // DELETE PRODUCT
+  const handleDeleteProduct = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) {
+      return;
+    }
 
-  const lowStockProducts = products.filter(
-    (product) => Number(product.stock) <= 12
-  );
+    try {
+      await request(`/products/${id}/`, {
+        method: "DELETE",
+      });
 
+      setProducts((previous) =>
+        previous.filter((product) => product.id !== id)
+      );
+
+      alert("Product deleted successfully!");
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  // DELETE CATEGORY
+  const handleDeleteCategory = async (id) => {
+    if (!window.confirm("Delete this category?")) return;
+
+    try {
+      await request(`/categories/${id}/`, {
+        method: "DELETE",
+      });
+
+      setCategories((previous) =>
+        previous.filter((category) => category.id !== id)
+      );
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  // FORMAT CURRENCY
+const formatAdminCurrency = (amount) => {
+  const value = Number(amount || 0);
+
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 2,
+  }).format(value);
+};
+
+// UPDATE ORDER STATUS
+const handleOrderStatus = async (id, status) => {
+  try {
+    await request(`/orders/admin/${id}/status/`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    });
+
+    await loadDashboardData();
+    alert("Order status updated successfully!");
+  } catch (error) {
+    alert(error.message || "Unable to update order status.");
+  }
+};
+
+  // FILTER PRODUCTS
   const filteredProducts = products.filter((product) =>
-    (product.name || "").toLowerCase().includes(search.toLowerCase())
+    product.name?.toLowerCase().includes(search.toLowerCase())
   );
 
   const menuItems = [
-    "Dashboard",
-    "Products",
-    "Categories",
-    "Cart",
-    "Users",
-    "Orders",
-    "Payments",
+    { id: "dashboard", label: "Dashboard" },
+    { id: "products", label: "Products" },
+    { id: "categories", label: "Categories" },
+    { id: "carts", label: "Cart" },
+    { id: "users", label: "Users" },
+    { id: "orders", label: "Orders" },
+    { id: "payments", label: "Payments" },
   ];
 
-  const renderProducts = (items) => (
-    <div className="table-wrapper">
-      <table className="admin-table">
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Product Name</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.length > 0 ? (
-            items.map((product) => (
-              <tr key={product.id}>
-                <td>
-                  {product.image ? (
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      style={{
-                        width: "48px",
-                        height: "48px",
-                        objectFit: "cover",
-                        borderRadius: "6px",
-                      }}
-                    />
-                  ) : "No Image"}
-                </td>
-                <td>{product.name}</td>
-                <td>{product.category_name}</td>
-                <td>₹{money(product.price)}</td>
-                <td>{product.stock}</td>
-                <td>
-                  <span className={`status ${
-                    product.stock > 0 ? "delivered" : "cancelled"
-                  }`}>
-                    {product.stock > 0 ? "In Stock" : "Out of Stock"}
-                  </span>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr><td colSpan="6">No products found.</td></tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
+  // IMAGE URL
+  const getImageUrl = (image) => {
+    if (!image) return "";
 
-  const renderError = (key) =>
-    sectionErrors[key] ? (
-      <p style={{ color: "#c0392b", padding: "12px" }}>
-        {sectionErrors[key]}
-      </p>
-    ) : null;
+    if (image.startsWith("http")) {
+      return image;
+    }
 
-  if (loading) {
-    return <div className="admin-main">Loading Admin Dashboard...</div>;
-  }
+    return `http://127.0.0.1:8000${image.startsWith("/") ? "" : "/"}${image}`;
+  };
 
   return (
-    <div className="admin-layout">
+    <div className="admin-dashboard">
       <aside className="admin-sidebar">
-        <h2 className="admin-logo">
-          Mega<span>Store</span>
-        </h2>
-
-        <p className="admin-label">ADMIN PANEL</p>
+        <h2>MegaStore Admin</h2>
 
         <nav>
           {menuItems.map((item) => (
             <button
-              key={item}
-              className={`admin-nav-item ${
-                activePage === item ? "active" : ""
-              }`}
-              onClick={() => {
-                setActivePage(item);
-                setSearch("");
-              }}
+              key={item.id}
+              className={
+                activeSection === item.id ? "active" : ""
+              }
+              onClick={() => setActiveSection(item.id)}
             >
-              {item}
+              {item.label}
             </button>
           ))}
         </nav>
-
-        <div className="sidebar-bottom">
-          <p>MEGASTORE ADMIN</p>
-          <small>Management Console</small>
-        </div>
       </aside>
 
       <main className="admin-main">
-        <header className="admin-topbar">
-          <div>
-            <h1>{activePage} Overview</h1>
-            <p>Manage your MegaStore application.</p>
-          </div>
+        <header className="admin-header">
+          <h2>
+            {menuItems.find((item) => item.id === activeSection)?.label}
+          </h2>
 
-          <div className="admin-profile">
-            <span>Admin</span>
-            <div className="admin-avatar">A</div>
-          </div>
-        </header>
-
-        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
-          <button className="gold-btn" onClick={loadDashboardData}>
+          <button onClick={loadDashboardData}>
             Refresh Data
           </button>
-        </div>
+        </header>
 
-        {activePage === "Dashboard" && (
-          <>
-            <div className="admin-stats">
-              <div className="stat-card">
-                <span className="stat-icon">□</span>
-                <p>Total Products</p>
-                <h2>{totalProducts}</h2>
-                <small>From Django database</small>
+        {loading && <p>Loading dashboard data...</p>}
+
+        {/* DASHBOARD */}
+        {activeSection === "dashboard" && (
+          <section className="dashboard-content">
+            <h2>Dashboard Overview</h2>
+
+            <div className="dashboard-cards">
+              <div className="dashboard-card">
+                <h3>Total Products</h3>
+                <p>{products.length}</p>
               </div>
 
-              <div className="stat-card">
-                <span className="stat-icon">▤</span>
-                <p>Total Categories</p>
-                <h2>{categories.length}</h2>
-                <small>Available categories</small>
+              <div className="dashboard-card">
+                <h3>Categories</h3>
+                <p>{categories.length}</p>
               </div>
 
-              <div className="stat-card">
-                <span className="stat-icon">▥</span>
-                <p>Total Stock</p>
-                <h2>{totalStock}</h2>
-                <small>Inventory units</small>
+              <div className="dashboard-card">
+                <h3>Users</h3>
+                <p>{users.length}</p>
               </div>
 
-              <div className="stat-card">
-                <span className="stat-icon">₹</span>
-                <p>Inventory Value</p>
-                <h2>₹{money(totalInventoryValue)}</h2>
-                <small>Price × stock</small>
+              <div className="dashboard-card">
+                <h3>Orders</h3>
+                <p>{orders.length}</p>
               </div>
 
-              <div className="stat-card">
-                <p>Total Users</p>
-                <h2>{users.length}</h2>
+              <div className="dashboard-card">
+                <h3>Payments</h3>
+                <p>{payments.length}</p>
               </div>
 
-              <div className="stat-card">
-                <p>Total Orders</p>
-                <h2>{orders.length}</h2>
-              </div>
-
-              <div className="stat-card">
-                <p>Total Carts</p>
-                <h2>{carts.length}</h2>
-              </div>
-
-              <div className="stat-card">
-                <p>Total Payments</p>
-                <h2>{payments.length}</h2>
+              <div className="dashboard-card">
+                <h3>Cart Items</h3>
+                <p>{carts.length}</p>
               </div>
             </div>
+          </section>
+        )}
 
-            {renderError("products")}
-            {renderError("categories")}
+        {/* PRODUCTS */}
+        {activeSection === "products" && (
+          <section className="admin-section">
+            <div className="section-heading">
+              <h2>Products Management</h2>
 
-            <div className="admin-panel">
-              <div className="panel-heading">
-                <h3>Recent Products</h3>
-                <button onClick={() => setActivePage("Products")}>
-                  View All
+              <button onClick={() => setShowProductForm(true)}>
+                + Add Product
+              </button>
+            </div>
+
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+
+            {sectionErrors.products && (
+              <p className="error-message">
+                {sectionErrors.products}
+              </p>
+            )}
+
+            {showProductForm && (
+              <div className="product-form-container">
+                <h3>Add New Product</h3>
+
+                <form onSubmit={handleAddProduct}>
+                  <label>Product Name *</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={newProduct.name}
+                    onChange={handleProductChange}
+                    placeholder="Enter product name"
+                    required
+                  />
+
+                  <label>Description</label>
+                  <textarea
+                    name="description"
+                    value={newProduct.description}
+                    onChange={handleProductChange}
+                    placeholder="Enter product description"
+                  />
+
+                  <label>Category *</label>
+                  <select
+                    name="category"
+                    value={newProduct.category}
+                    onChange={handleProductChange}
+                    required
+                  >
+                    <option value="">Select Category</option>
+
+                    {categories.map((category) => (
+                      <option
+                        key={category.id}
+                        value={category.id}
+                      >
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <label>Price *</label>
+                  <input
+                    type="number"
+                    name="price"
+                    value={newProduct.price}
+                    onChange={handleProductChange}
+                    min="0.01"
+                    step="0.01"
+                    required
+                  />
+
+                  <label>Stock *</label>
+                  <input
+                    type="number"
+                    name="stock"
+                    value={newProduct.stock}
+                    onChange={handleProductChange}
+                    min="0"
+                    required
+                  />
+
+                  <label>Select Product Image *</label>
+                  <input
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    required
+                  />
+
+                  {imagePreview && (
+                    <div className="image-preview">
+                      <img
+                        src={imagePreview}
+                        alt="Product Preview"
+                        style={{
+                          width: "150px",
+                          height: "150px",
+                          objectFit: "cover",
+                          borderRadius: "10px",
+                          marginTop: "10px",
+                        }}
+                      />
+
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                      >
+                        Remove Image
+                      </button>
+                    </div>
+                  )}
+
+                  {productError && (
+                    <p className="error-message">{productError}</p>
+                  )}
+
+                  {productSuccess && (
+                    <p className="success-message">
+                      {productSuccess}
+                    </p>
+                  )}
+
+                  <div className="form-buttons">
+                    <button type="submit" disabled={savingProduct}>
+                      {savingProduct ? "Saving..." : "Add Product"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={closeProductForm}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            <div className="products-grid">
+              {filteredProducts.map((product) => (
+                <div className="product-card" key={product.id}>
+                  {product.image && (
+                    <img
+                      src={getImageUrl(product.image)}
+                      alt={product.name}
+                      className="product-image"
+                    />
+                  )}
+
+                  <h3>{product.name}</h3>
+                  <p>{product.description}</p>
+                  <p>Price: ₹{product.price}</p>
+                  <p>Stock: {product.stock}</p>
+
+                  <button
+                    onClick={() => handleDeleteProduct(product.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {!filteredProducts.length && !loading && (
+              <p>No products found.</p>
+            )}
+          </section>
+        )}
+
+        {/* CATEGORIES */}
+        {activeSection === "categories" && (
+          <section className="admin-section">
+            <h2>Categories Management</h2>
+
+            {categories.map((category) => (
+              <div className="admin-list-item" key={category.id}>
+                <span>{category.name}</span>
+
+                <button
+                  onClick={() => handleDeleteCategory(category.id)}
+                >
+                  Delete
                 </button>
               </div>
-              {renderProducts(products.slice(0, 5))}
-            </div>
+            ))}
 
-            <div className="admin-panel">
-              <div className="panel-heading">
-                <h3>Low Stock Products</h3>
+            {!categories.length && <p>No categories found.</p>}
+          </section>
+        )}
+
+        {/* CART */}
+        {activeSection === "carts" && (
+          <section className="admin-section">
+            <h2>Cart Management</h2>
+
+            {carts.map((cart) => (
+              <div className="admin-list-item" key={cart.id}>
+                <span>
+                  Cart #{cart.id} - User: {cart.user || cart.user_id || "N/A"}
+                </span>
               </div>
-              {renderProducts(lowStockProducts)}
-            </div>
-          </>
+            ))}
+
+            {!carts.length && <p>No cart items found.</p>}
+          </section>
         )}
 
-        {activePage === "Products" && (
-          <>
-            {renderError("products")}
-            <div className="admin-toolbar">
-              <input
-                type="search"
-                placeholder="Search products..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
+        {/* USERS */}
+        {activeSection === "users" && (
+          <section className="admin-section">
+            <h2>Users Management</h2>
 
-            <div className="admin-panel">
-              <div className="panel-heading">
-                <h3>All Products ({filteredProducts.length})</h3>
+            {users.map((user) => (
+              <div className="admin-list-item" key={user.id}>
+                <span>
+                  {user.username || user.email || user.id}
+                </span>
               </div>
-              {renderProducts(filteredProducts)}
-            </div>
-          </>
+            ))}
+
+            {!users.length && <p>No users found.</p>}
+          </section>
         )}
 
-        {activePage === "Categories" && (
-          <div className="admin-panel">
-            {renderError("categories")}
-            <div className="panel-heading">
-              <h3>All Categories ({categories.length})</h3>
-            </div>
-            <div className="table-wrapper">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Category Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {categories.map((category) => (
-                    <tr key={category.id}>
-                      <td>{category.id}</td>
-                      <td>{category.name}</td>
-                      <td>{category.description || "No description"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+        {/* ORDERS */}
+        {activeSection === "orders" && (
+          <section className="admin-section orders-section">
+            <h2>Orders Management</h2>
+
+            {orders.map((order) => (
+              <div className="admin-list-item" key={order.id}>
+                <span>
+                  Order #{order.id} - {order.status || "Pending"}
+                </span>
+
+                <select
+                  value={order.status || "pending"}
+                  onChange={(e) =>
+                    handleOrderStatus(order.id, e.target.value)
+                  }
+                >
+                  <option value="pending">Pending</option>
+                  <option value="processing">Processing</option>
+                  <option value="shipped">Shipped</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+            ))}
+
+            {!orders.length && <p>No orders found.</p>}
+          </section>
         )}
 
-        {activePage === "Cart" && (
-          <div className="admin-panel">
-            {renderError("carts")}
-            <div className="panel-heading">
-              <h3>All Customer Carts ({carts.length})</h3>
-            </div>
-            <div className="table-wrapper">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Cart ID</th>
-                    <th>Customer</th>
-                    <th>Items</th>
-                    <th>Products</th>
-                    <th>Total</th>
-                    <th>Updated</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {carts.map((cart) => (
-                    <tr key={cart.id}>
-                      <td>#{cart.id}</td>
-                      <td>{cart.username || `User ${cart.user}`}</td>
-                      <td>{cart.items?.length || 0}</td>
-                      <td>
-                        {cart.items?.map((item) => (
-                          <div key={item.id}>
-                            {item.product_name} × {item.quantity}
-                            {item.selected_size ? ` (${item.selected_size})` : ""}
-                          </div>
-                        ))}
-                      </td>
-                      <td>₹{money(cart.total_price)}</td>
-                      <td>{formatDate(cart.updated_at)}</td>
-                    </tr>
-                  ))}
-                  {carts.length === 0 && (
-                    <tr><td colSpan="6">No carts found.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+        {/* PAYMENTS */}
+        {activeSection === "payments" && (
+          <section className="admin-section payments-section">
+            <h2>Payments Management</h2>
 
-        {activePage === "Users" && (
-          <div className="admin-panel">
-            {renderError("users")}
-            <div className="panel-heading">
-              <h3>Registered Users ({users.length})</h3>
-            </div>
-            <div className="table-wrapper">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Joined</th>
-                    <th>Role</th>
-                    <th>Account</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((user) => (
-                    <tr key={user.id}>
-                      <td>{user.id}</td>
-                      <td>{user.username}</td>
-                      <td>{user.email || "-"}</td>
-                      <td>{formatDate(user.date_joined)}</td>
-                      <td>{user.is_superuser ? "Super Admin" : user.is_staff ? "Staff" : "Customer"}</td>
-                      <td>{user.is_active ? "Active" : "Inactive"}</td>
-                    </tr>
-                  ))}
-                  {users.length === 0 && (
-                    <tr><td colSpan="6">No users found.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+            {payments.map((payment) => (
+              <div className="admin-list-item" key={payment.id}>
+                <span>
+                  Payment #{payment.id} - ₹{payment.amount || "N/A"} -{" "}
+                  {payment.status || "N/A"}
+                </span>
+              </div>
+            ))}
 
-        {activePage === "Orders" && (
-          <div className="admin-panel">
-            {renderError("orders")}
-            <div className="panel-heading">
-              <h3>All Orders ({orders.length})</h3>
-            </div>
-            <div className="table-wrapper">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Order ID</th>
-                    <th>Customer</th>
-                    <th>Items</th>
-                    <th>Total</th>
-                    <th>Payment</th>
-                    <th>Payment Status</th>
-                    <th>Order Status</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.map((order) => (
-                    <tr key={order.id}>
-                      <td>#{order.id}</td>
-                      <td>
-                        {order.username}
-                        <div>{order.full_name}</div>
-                      </td>
-                      <td>
-                        {order.items?.map((item) => (
-                          <div key={item.id}>
-                            {item.product_name} × {item.quantity}
-                          </div>
-                        ))}
-                      </td>
-                      <td>₹{money(order.total_amount)}</td>
-                      <td>{order.payment_method}</td>
-                      <td>{order.payment_status}</td>
-                      <td>
-                        <select
-                          value={order.status}
-                          disabled={updatingOrder === order.id}
-                          onChange={(e) =>
-                            updateOrderStatus(order.id, e.target.value)
-                          }
-                        >
-                          {["pending", "confirmed", "shipped", "delivered", "cancelled"].map((status) => (
-                            <option key={status} value={status}>
-                              {status.toUpperCase()}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td>{formatDate(order.created_at)}</td>
-                    </tr>
-                  ))}
-                  {orders.length === 0 && (
-                    <tr><td colSpan="8">No orders found.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {activePage === "Payments" && (
-          <div className="admin-panel">
-            {renderError("payments")}
-            <div className="panel-heading">
-              <h3>Payment Transactions ({payments.length})</h3>
-            </div>
-            <div className="table-wrapper">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Payment ID</th>
-                    <th>Customer</th>
-                    <th>Order ID</th>
-                    <th>Amount</th>
-                    <th>Currency</th>
-                    <th>Payment Status</th>
-                    <th>Razorpay Payment ID</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {payments.map((payment) => (
-                    <tr key={payment.id}>
-                      <td>#{payment.id}</td>
-                      <td>
-                        {payment.username}
-                        <div>{payment.email}</div>
-                      </td>
-                      <td>{payment.order_id ? `#${payment.order_id}` : "-"}</td>
-                      <td>₹{money(Number(payment.amount || 0) / 100)}</td>
-                      <td>{payment.currency}</td>
-                      <td>{payment.status}</td>
-                      <td>{payment.razorpay_payment_id || "-"}</td>
-                      <td>{formatDate(payment.created_at)}</td>
-                    </tr>
-                  ))}
-                  {payments.length === 0 && (
-                    <tr><td colSpan="8">No payment records found.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+            {!payments.length && <p>No payments found.</p>}
+          </section>
         )}
       </main>
     </div>
   );
-}
+};
 
 export default AdminDashboard;
+
+
+
+
 
